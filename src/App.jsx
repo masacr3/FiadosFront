@@ -27,7 +27,7 @@ function App() {
         {data && 
           data.map((item,i) =>
             <li key={i} className='lora'>
-              ❤️ {item.nombre} 
+              {item.nombre}
             </li>
           )
         }
