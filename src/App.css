@@ -1,7 +1,5 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  
   text-align: center;
 }
 
@@ -39,4 +37,18 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.App {
+  width: 90vw;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: center;
+  align-items: center;
+}
+
+.App-header{
+  width: 100%;
+  text-align: -webkit-center;
 }

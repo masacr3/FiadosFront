@@ -1,13 +1,30 @@
 import React from 'react';
-import axios from 'axios';
-//import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
-import { useState } from 'react';
-import { useEffect } from 'react';
-//import Filtrador from './components/filtrador';
-//import Usuario from './components/usuario';
-//import Pagar from './components/pagar';  // Importar el componente Pagar
+import Filtrador from './components/filtrador.jsx';
+import Usuario from './components/usuario.jsx';
+import Pagar from './components/pagar.jsx';  // Importar el componente Pagar
 
+function App() {
+  return (
+    <Router basename="/FiadosFront">
+      <div className="App">
+        <header className="App-header">
+          <Routes>
+            <Route path="/" element={<Filtrador />} />
+            <Route path="/usuario/:id" element={<Usuario />} />
+            <Route path="/pagar/:id" element={<Pagar />} /> {/* Agregar ruta para el componente Pagar */}
+          </Routes>
+        </header>
+      </div>
+    </Router>
+  );
+}
+
+export default App;
+
+
+/*
 function App() {
   const [data , setData]  = useState([])
 
@@ -36,4 +53,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; */

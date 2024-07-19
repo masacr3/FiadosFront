@@ -1,0 +1,56 @@
+.filtrador-container {
+  padding: 20px;
+  background-color: #ffffff;
+  max-width: 700px;
+  min-height: 100vh;
+  height: 95%;
+  width: 100%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  flex-wrap: nowrap;
+  overflow-y: auto;
+
+}
+  
+  .filtrador-buscador {
+    margin-bottom: 20px;
+    width: 90%;
+  }
+  
+  .filtrador-input {
+    width: 100%;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin: 0px;
+}
+  
+  .filtrador-titulo {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+  
+  .filtrador-lista {
+    list-style: none;
+    padding: 0;    
+    width: 70%;
+  }
+  
+  .filtrador-item {
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #e9e9e9;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .filtrador-item:hover {
+    background-color: #d3d3d3;
+  }
+  
