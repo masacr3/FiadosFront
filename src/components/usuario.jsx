@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { FaEdit } from 'react-icons/fa';
+import { MdDeleteForever } from "react-icons/md";
+import { TfiMoney } from "react-icons/tfi";
+import { FaRegKeyboard } from "react-icons/fa";
 import { useParams, useNavigate } from 'react-router-dom';
 import './usuario.css';  // Importar el archivo CSS
 
@@ -10,9 +13,14 @@ const Usuario = () => {
   const [user, setUser] = useState(null);
   const [montos, setMontos] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
-  const [isEditing, setIsEditing] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [newMonto, setNewMonto] = useState('');
+  const [editIndex, setEditIndex] = useState(null);
   const [editMonto, setEditMonto] = useState('');
+  const [editedMontos, setEditedMontos] = useState([]);
+  const addMontoRef = useRef(null);
+  const editMontoRef = useRef(null);
+  const inputRef = useRef(null);  // Nuevo ref para el input de agregar monto
 
   useEffect(() => {
     axios.get('https://masacr3bot.pythonanywhere.com/usuarios')
@@ -21,55 +29,86 @@ const Usuario = () => {
         if (foundUser) {
           setUser(foundUser);
           setMontos(foundUser.monto || []);
+          setEditedMontos(foundUser.monto || []);
         }
       })
       .catch(error => {
         console.error('Hubo un error al obtener los usuarios!', error);
       });
-      console.log("leo gato")
   }, [id]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (addMontoRef.current && !addMontoRef.current.contains(event.target)) {
+        setIsAdding(false);
+        setNewMonto('');
+      }
+      if (editMontoRef.current && !editMontoRef.current.contains(event.target)) {
+        setEditIndex(null);
+        setEditMonto('');
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isAdding) {
+      inputRef.current.focus();
+    }
+  }, [isAdding]);
+
   if (!user) {
-    return <div class="cargando">Cargando...</div>;
+    return <div className="cargando">Cargando...</div>;
   }
 
-  const totalMonto = montos.reduce((total, monto) => total + monto, 0);
+  const totalMonto = editedMontos.reduce((total, monto) => total + monto, 0);
 
-  const handleAddMonto = () => {
+  const handleAddMonto = (e) => {
+    e.preventDefault();
     if (newMonto > 0) {
-      const updatedUser = {
-        ...user,
-        monto: [ parseInt(newMonto)]
-      };
-      axios.post('https://masacr3bot.pythonanywhere.com/montos', updatedUser)
-        .then(response => {
-          setMontos([...montos, parseInt(newMonto)]);
-          setNewMonto('');
-          setIsAdding(false);
-        })
-        .catch(error => {
-          console.error('There was an error adding the monto!', error);
-        });
+      setEditedMontos([...editedMontos, parseInt(newMonto)]);
+      setNewMonto('');
+      setIsAdding(false);
     } else {
       alert('El monto debe ser mayor a 0');
     }
   };
 
-  const handleEditMonto = (index) => {
-    const updatedMontos = [...montos];
+  const handleEditMonto = (e, index) => {
+    e.preventDefault();
+    const updatedMontos = [...editedMontos];
     updatedMontos[index] = parseInt(editMonto);
+    setEditedMontos(updatedMontos);
+    setEditIndex(null);
+  };
+
+  const handleDeleteMonto = (index) => {
+    const updatedMontos = editedMontos.filter((_, i) => i !== index);
+    setEditedMontos(updatedMontos);
+  };
+
+  const handleGuardar = () => {
     const updatedUser = {
       ...user,
-      monto: updatedMontos
+      monto: editedMontos
     };
     axios.put(`https://masacr3bot.pythonanywhere.com/montos/${user.id}/${user.nombre}`, updatedUser)
       .then(response => {
-        setMontos(updatedUser.monto);
-        setIsEditing(null);
+        setMontos(editedMontos);
+        setIsEditing(false);
       })
       .catch(error => {
-        console.error('There was an error updating the monto!', error);
+        console.error('There was an error updating the montos!', error);
       });
+  };
+
+  const handleCancel = () => {
+    setEditedMontos(montos);
+    setIsEditing(false);
   };
 
   const handleBack = () => {
@@ -82,55 +121,92 @@ const Usuario = () => {
 
   return (
     <div className="usuario-container">
-      <button className="usuario-button" onClick={handleBack}>Volver</button>
-      <h1 className="usuario-nombre">{user.nombre}</h1>
-      <h3 className="usuario-montos-titulo">Montos:</h3>
-      <ul className="usuario-montos-lista">
-        {montos.map((monto, index) => (
-          <li key={index} className="usuario-monto-item">
-            {isEditing === index ? (
-              <div className="usuario-monto-editar">
-                <input 
-                  type="number" 
-                  value={editMonto} 
-                  onChange={(e) => setEditMonto(e.target.value)} 
-                  placeholder="Nuevo Monto" 
-                  className="usuario-monto-input"
-                />
-                <button className="usuario-monto-guardar" onClick={() => handleEditMonto(index)}>Guardar</button>
-              </div>
-            ) : (
-              <div className="usuario-monto-mostrar">
-                {monto}
-                <FaEdit onClick={() => { setIsEditing(index); setEditMonto(monto); }} className="usuario-monto-editar-icono" />
-                <FaEdit onClick={() => { setIsEditing(index); setEditMonto(monto); }} className="usuario-monto-editar-icono" />
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
-      {isAdding && (
-        <div className="usuario-agregar-monto">
-          <input 
-            type="number" 
-            value={newMonto} 
-            onChange={(e) => setNewMonto(e.target.value)} 
-            placeholder="Nuevo Monto" 
-            className="usuario-monto-input"
-          />
-          <button className="usuario-agregar-boton" onClick={handleAddMonto}>Enviar</button>
+      <h1 className={`usuario-nombre ${isEditing ? 'editar' : ''}`}>
+        {user.nombre}
+        {isEditing && <MdDeleteForever className="usuario-eliminar-icono" />}
+      </h1>
+      <div className="monto-container">
+        <div className='usuario-mon-btn'>
+          <ul className="usuario-montos-lista">
+            {editedMontos.map((monto, index) => (
+              <li key={index} className="usuario-monto-item">
+                {editIndex === index ? (
+                  <div ref={editMontoRef} className="usuario-monto-editar">
+                    <form onSubmit={(e) => handleEditMonto(e, index)}>
+                      <input
+                        type="number"
+                        value={editMonto}
+                        onChange={(e) => setEditMonto(e.target.value)}
+                        placeholder="Nuevo Monto"
+                        className="usuario-monto-input"
+                      />
+                    </form>
+                  </div>
+                ) : (
+                  <div className="usuario-monto-mostrar">
+                    <span className="monto-texto">{monto}</span>
+                    {isEditing && (
+                      <div className="iconos-container">
+                        <FaEdit onClick={() => { setEditIndex(index); setEditMonto(monto); }} className="usuario-monto-editar-icono" />
+                        <MdDeleteForever onClick={() => handleDeleteMonto(index)} className="usuario-monto-eliminar-icono" />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+          <div className="usuario-acciones">
+            <FaRegKeyboard
+              className={`usuario-agregar-monto-icono ${isEditing ? 'disabled' : ''}`}
+              onClick={() => !isEditing && setIsAdding(true)}
+              style={{ cursor: !isEditing ? 'pointer' : 'not-allowed', color: !isEditing ? 'black' : 'white' }}
+            />
+            <TfiMoney
+              className={`usuario-pagar-icono ${isEditing ? 'disabled' : ''}`}
+              onClick={() => !isEditing && handlePagar()}
+              style={{ cursor: !isEditing ? 'pointer' : 'not-allowed', color: !isEditing ? 'black' : 'white' }}
+            />
+            <p className="usuario-total">Total: {totalMonto}</p>
+          </div>
         </div>
-      )}
-      <button className="usuario-agregar-monto-boton" onClick={() => setIsAdding(true)}>Agregar Monto</button>
-      <div className="usuario-acciones">
-        <button className="usuario-pagar-boton" onClick={handlePagar}>Pagar</button>
-        <p className="usuario-total">Total: {totalMonto}</p>
+        {isAdding && (
+          <div ref={addMontoRef} className="usuario-agregar-monto">
+            <form onSubmit={handleAddMonto} className="usuario-agregar-monto-form">
+              <input
+                ref={inputRef}
+                type="number"
+                value={newMonto}
+                onChange={(e) => setNewMonto(e.target.value)}
+                placeholder="Nuevo Monto"
+                className="usuario-monto-input"
+              />
+              <button type="button" onClick={() => { setIsAdding(false); setNewMonto(''); }}>
+                Cancelar
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
+      <div className="btn-flotantes-conteiner">
+        <button className="usuario-button" onClick={isEditing ? handleCancel : handleBack}>
+          {isEditing ? 'Cancelar' : 'Volver'}
+        </button>
+        <button className="usuario-button" onClick={isEditing ? handleGuardar : () => setIsEditing(true)}>
+          {isEditing ? 'Guardar' : 'Editar'}
+        </button>
       </div>
     </div>
   );
 };
 
 export default Usuario;
+
+
+       
+
+
+
 
 
 

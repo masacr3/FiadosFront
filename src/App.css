@@ -1,5 +1,4 @@
 #root {
-  
   text-align: center;
 }
 
@@ -43,12 +42,10 @@
   width: 90vw;
   display: flex;
   flex-direction: column;
-  flex-wrap: nowrap;
-  align-content: center;
   align-items: center;
 }
 
-.App-header{
+.App-header {
   width: 100%;
-  text-align: -webkit-center;
+  text-align: center;
 }

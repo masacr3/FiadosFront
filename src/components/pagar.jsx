@@ -61,25 +61,29 @@ const Pagar = () => {
 
   return (
     <div className="pagar-container">
-      <h1>{user.nombre}</h1>
-      <div className="usuario-acciones">
-        <p className="usuario-total">Total: {totalMonto}</p>
+      <h1 className="pagar-monto">{user.nombre}</h1>
+      <div className="pagar-acciones">
+        <p className="pagar-total">Total: {totalMonto}</p>
         {isAdding && (
-          <div className="usuario-agregar-monto">
+          <div className="pagar-agregar-monto">
             <input 
               type="number" 
               value={newMonto} 
               onChange={(e) => setNewMonto(e.target.value)} 
               placeholder="Cuanto pago" 
-              className="usuario-monto-input"
+              className="pagar-monto-input"
             />
           </div>
         )}
-        <button className="usuario-button" onClick={() => navigate(-1)}>Cancelar</button>
-        <button className="usuario-pagar-boton" onClick={handlePagar}>
-          {isAdding ? 'Enviar Pago' : 'Pagar'}
-        </button>
+        
       </div>
+      <div className="btn-pagar-flotantes-conteiner">
+
+          <button className="pagar-button" onClick={() => navigate(-1)}>Cancelar</button>
+          <button className="pagar-button" onClick={handlePagar}>
+            {isAdding ? 'Enviar Pago' : 'Pagar'}
+          </button>
+        </div>
     </div>
   );
 };

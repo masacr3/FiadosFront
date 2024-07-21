@@ -1,16 +1,13 @@
 .pagar-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
   background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  min-height: 100vh;
+  border-radius: 10px;
   max-width: 600px;
+  width: 100%;
+  min-height: 95vh;
+  margin: auto;
 }
 
-.usuario-button {
+.pagar-button {
   background-color: #007bff;
   color: white;
   border: none;
@@ -19,9 +16,11 @@
   cursor: pointer;
   margin-bottom: 20px;
   transition: background-color 0.3s;
+  width: 50%;
+  max-width: 300px;
 }
 
-.usuario-button:hover {
+.pagar-button:hover {
   background-color: #0056b3;
 }
 
@@ -30,14 +29,15 @@ h1 {
   margin-bottom: 10px;
 }
 
-.usuario-acciones {
+.pagar-acciones {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
+  min-height: 71vh;
 }
 
-.usuario-pagar-boton {
+.pagar-pagar-boton {
   background-color: #28a745;
   color: white;
   border: none;
@@ -48,24 +48,36 @@ h1 {
   transition: background-color 0.3s;
 }
 
-.usuario-pagar-boton:hover {
+.pagar-pagar-boton:hover {
   background-color: #218838;
 }
 
-.usuario-total {
+.pagar-total {
   font-size: 1.5em;
   font-weight: bold;
 }
 
-.usuario-agregar-monto {
+.pagar-agregar-monto {
   margin-bottom: 10px;
 }
 
-.usuario-monto-input {
+.pagar-monto-input {
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
   width: 100%;
   box-sizing: border-box;
   margin-bottom: 10px;
+}
+
+.pagar-monto {
+  width: 100%;
+  background-color: #28a745;
+}
+
+.btn-pagar-flotantes-conteiner {
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
 }
