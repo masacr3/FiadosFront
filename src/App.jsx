@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Filtrador from './components/filtrador.jsx';
-import Usuario from './components/usuario.jsx';
+import Usuario from './components/usuario/usuario.jsx';
 import Pagar from './components/pagar.jsx';  // Importar el componente Pagar
 
 function App() {

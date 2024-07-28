@@ -1,6 +1,5 @@
 .usuario-container {
   background-color: #f9f9f9;
-  border-radius: 10px;
   max-width: 600px;
   width: 100%;
   min-height: 95vh;
@@ -38,7 +37,7 @@
 }
 
 .usuario-montos-lista {
-  width: 60%;
+  width: 50vw;
   list-style: none;
   padding: 0;
   max-height: 40vh;
@@ -95,7 +94,6 @@
 
 .usuario-monto-input {
   padding: 5px;
-  margin-right: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1rem;
@@ -116,10 +114,11 @@
   background-color: #218838;
 }
 
-.usuario-agregar-monto {
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
+.usuario-cancelar-monto-bton{
+  background-color: #dc3545;
+  color: whitesmoke;
+  margin-top: 12px;
+  margin-right: 10px;
 }
 
 .usuario-agregar-monto-boton {
@@ -192,12 +191,25 @@
 }
 
 .btn-flotantes-conteiner {
-  width: 100%;
+  /* width: 100%;
     max-width: 600px;
     display: flex;
     justify-content: flex-start;
     position: fixed;
-    bottom: 10px;
+    bottom: 10px; */
+    display: flex;
+    background-color: #fae6e6;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    padding: 10px;
+    max-width: 600px;
+    min-width: 320px;
+    position: fixed;
+    bottom: 0;
+    width: 90%;
+    border-top: 1px solid #79647557;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Sombra discreta en el borde superior */
 }
 
 .monto-container {
@@ -268,8 +280,44 @@
   background: gray;
 }
 
-.usuario-agregar-monto-form{
+.usuario-agregar-monto {
+  display: flex;
+  align-items: center;
+  position: fixed;
   display: flex;
   flex-wrap: nowrap;
   flex-direction: row;
+  top: 0;
+  width: 90%;
+  background: #00000059;
+  padding: 10px;
+  height: 100vh;
+  align-items: center;
+  align-content: center;
+  justify-content: space-evenly;
 }
+
+.usuario-agregar-monto-p {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  top: 0;
+  width: 90%;
+  background: #00000059;
+  padding: 10px;
+  height: 100vh;
+  align-items: center;
+  align-content: center;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+
+.usuario-agregar-monto-form {
+  background: #f9f9f9;
+  padding: 20px;
+  justify-content: space-evenly;
+  border-radius: 15px;
+} 

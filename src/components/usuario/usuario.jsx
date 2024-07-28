@@ -6,6 +6,8 @@ import { TfiMoney } from "react-icons/tfi";
 import { FaRegKeyboard } from "react-icons/fa";
 import { useParams, useNavigate } from 'react-router-dom';
 import './usuario.css';  // Importar el archivo CSS
+import Footer from './Footer';
+import AgregarMontos from './AgregarMontos';
 
 const Usuario = () => {
   const { id } = useParams();
@@ -14,10 +16,11 @@ const Usuario = () => {
   const [montos, setMontos] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [newMonto, setNewMonto] = useState('');
+  const [newMonto, setNewMonto] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
   const [editMonto, setEditMonto] = useState('');
   const [editedMontos, setEditedMontos] = useState([]);
+  const [agrego, setAgrego] = useState(false)
   const addMontoRef = useRef(null);
   const editMontoRef = useRef(null);
   const inputRef = useRef(null);  // Nuevo ref para el input de agregar monto
@@ -55,11 +58,11 @@ const Usuario = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (isAdding) {
-      inputRef.current.focus();
-    }
-  }, [isAdding]);
+  // useEffect(() => {
+  //   if (isAdding) {
+  //     inputRef.current.focus();
+  //   }
+  // }, [isAdding]);
 
   if (!user) {
     return <div className="cargando">Cargando...</div>;
@@ -91,20 +94,46 @@ const Usuario = () => {
     setEditedMontos(updatedMontos);
   };
 
+  const handleDeleteMontoCarga = (index) => {
+    const updatedMontos = newMonto.filter((_, i) => i !== index);
+    setNewMonto(updatedMontos);
+    if (updatedMontos.length == 0){
+      setAgrego(false)
+    }
+  };
+
   const handleGuardar = () => {
     const updatedUser = {
       ...user,
       monto: editedMontos
     };
+    console.log (updatedUser.monto)
     axios.put(`https://masacr3bot.pythonanywhere.com/montos/${user.id}/${user.nombre}`, updatedUser)
       .then(response => {
-        setMontos(editedMontos);
+        setMontos([...editedMontos]);
         setIsEditing(false);
       })
       .catch(error => {
         console.error('There was an error updating the montos!', error);
       });
   };
+
+  const handleEnviar = () => {
+    const updatedUser = {
+      ...user,
+      monto: newMonto
+    };
+    console.log (updatedUser.monto)
+    axios.post('https://masacr3bot.pythonanywhere.com/montos', updatedUser)
+      .then(response => {
+        setMontos([...editedMontos]);
+        setIsEditing(false);
+      })
+      .catch(error => {
+        console.error('There was an error updating the montos!', error);
+      });
+  };
+
 
   const handleCancel = () => {
     setEditedMontos(montos);
@@ -127,7 +156,7 @@ const Usuario = () => {
       </h1>
       <div className="monto-container">
         <div className='usuario-mon-btn'>
-          <ul className="usuario-montos-lista">
+          {!isAdding && !agrego && <ul className="usuario-montos-lista">
             {editedMontos.map((monto, index) => (
               <li key={index} className="usuario-monto-item">
                 {editIndex === index ? (
@@ -156,10 +185,23 @@ const Usuario = () => {
               </li>
             ))}
           </ul>
+          }
+          {agrego && <ul className='usuario-montos-lista'>
+              {newMonto && newMonto.map((monto, index) =>(
+                <li key={index} className='usuario-monto-item'>
+                  <div className="usuario-monto-mostrar">
+                    <span className="monto-texto">{monto}</span>
+                      <div className="iconos-container">
+                        <MdDeleteForever onClick={() => handleDeleteMontoCarga(index)} className="usuario-monto-eliminar-icono" />
+                      </div>
+                  </div>
+                </li>
+              ) )}
+            </ul>}
           <div className="usuario-acciones">
             <FaRegKeyboard
               className={`usuario-agregar-monto-icono ${isEditing ? 'disabled' : ''}`}
-              onClick={() => !isEditing && setIsAdding(true)}
+              onClick={() => { !isEditing && setIsAdding(true); setAgrego(true)}}
               style={{ cursor: !isEditing ? 'pointer' : 'not-allowed', color: !isEditing ? 'black' : 'white' }}
             />
             <TfiMoney
@@ -170,32 +212,33 @@ const Usuario = () => {
             <p className="usuario-total">Total: {totalMonto}</p>
           </div>
         </div>
-        {isAdding && (
-          <div ref={addMontoRef} className="usuario-agregar-monto">
-            <form onSubmit={handleAddMonto} className="usuario-agregar-monto-form">
-              <input
-                ref={inputRef}
-                type="number"
-                value={newMonto}
-                onChange={(e) => setNewMonto(e.target.value)}
-                placeholder="Nuevo Monto"
-                className="usuario-monto-input"
-              />
-              <button type="button" onClick={() => { setIsAdding(false); setNewMonto(''); }}>
-                Cancelar
-              </button>
-            </form>
-          </div>
-        )}
+        {isAdding && //(
+        //   <div ref={addMontoRef} className="usuario-agregar-monto">
+        //     <form onSubmit={handleAddMonto} className="usuario-agregar-monto-form">
+        //       <input
+        //         ref={inputRef}
+        //         type="number"
+        //         value={newMonto}
+        //         onChange={(e) => setNewMonto(e.target.value)}
+        //         placeholder="Nuevo Monto"
+        //         className="usuario-monto-input"
+        //       />
+        //       <button type="button" className="usuario-cancelar-monto-bton"onClick={() => { setIsAdding(false); setNewMonto(''); }}>
+        //         Cancelar
+        //       </button>
+        //     </form>
+        //   </div>
+        // )
+          <AgregarMontos newMonto={newMonto} setNewMonto={setNewMonto} setIsAdding={setIsAdding} setAgrego={setAgrego}/>
+        }
       </div>
-      <div className="btn-flotantes-conteiner">
-        <button className="usuario-button" onClick={isEditing ? handleCancel : handleBack}>
-          {isEditing ? 'Cancelar' : 'Volver'}
-        </button>
-        <button className="usuario-button" onClick={isEditing ? handleGuardar : () => setIsEditing(true)}>
-          {isEditing ? 'Guardar' : 'Editar'}
-        </button>
-      </div>
+      {!isAdding && <Footer 
+                        isEditing={isEditing} 
+                        setIsEditing={setIsEditing} 
+                        handleGuardar={handleGuardar}
+                        handlerEnviar={handleEnviar} 
+                        handleCancel={handleCancel}/>
+      }
     </div>
   );
 };

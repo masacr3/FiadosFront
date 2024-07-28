@@ -1,0 +1,14 @@
+GET https://masacr3bot.pythonanywhere.com/usuarios
+
+###
+POST https://masacr3bot.pythonanywhere.com/montos
+Content-Type: application/json
+
+{
+    "id": "fa9ed989-a30a-4c13-9d46-0f2c100bf2ed",
+    "monto" : [200, 300],
+    "nombre" : "leo"
+}
+
+###
+PUT "http
