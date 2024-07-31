@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './filtrador.css'; // Importar el archivo CSS
 
 const Filtrador = () => {
   const [users, setUsers] = useState([]);
@@ -57,8 +56,8 @@ const Filtrador = () => {
   );
 
   return (
-    <div className="filtrador-container">
-      <div className="filtrador-buscador">
+    <div className="card">
+      <div className="header">
         <input
           type="text"
           value={searchTerm}
@@ -73,11 +72,11 @@ const Filtrador = () => {
         )}
       </div>
 
-      <h3 className="filtrador-titulo">Lista de Usuarios</h3>
-      <ul className="filtrador-lista">
+      <h3>Lista de Usuarios</h3>
+      <ul>
         {filteredUsers.map(user => (
-          <li key={user.id} onClick={() => handleUserClick(user)} className="filtrador-item">
-            {user.nombre}
+          <li key={user.id} onClick={() => handleUserClick(user)} className='flex-center'>
+            <div>{user.nombre}</div>
           </li>
         ))}
       </ul>

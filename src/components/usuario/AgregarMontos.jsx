@@ -1,15 +1,22 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
+// eslint-disable-next-line react/prop-types
 function AgregarMontos({newMonto, setNewMonto, setIsAdding, setAgrego}) {
     const [inputValue, setInputValue] = useState('')
     const handleKeyDown = (e) => {
         if ( e.key === 'Enter') {
           // Previene el comportamiento por defecto del Enter (por ejemplo, si está dentro de un formulario)
           e.preventDefault();
-          // Agrega el valor del input a la lista
-          setNewMonto([parseInt(inputValue), ...newMonto]);
-          // Limpia el input
-          setInputValue('');
+
+          if (!isNaN(parseInt(inputValue))){
+            // Agrega el valor del input a la lista
+            setNewMonto([parseInt(inputValue), ...newMonto]);
+            // Limpia el input
+            setInputValue('');
+          }
+          else{
+            console.log("el valor no es numerico")
+          }
         }
       };
   return (
@@ -23,10 +30,10 @@ function AgregarMontos({newMonto, setNewMonto, setIsAdding, setAgrego}) {
                 placeholder="Nuevo Monto"
                 className="usuario-monto-input"
               />
-            <button type="button" className="usuario-cancelar-monto-bton"onClick={() => { setIsAdding(false); setNewMonto([]); setAgrego(false); }}>
+            {/* <button type="button" className="usuario-cancelar-monto-bton"onClick={() => { setIsAdding(false); setAgrego(true); }}>
                 Cancelar
-            </button>
-            <button className='usuario-cancelar-monto-bton' onClick={()=> {setAgrego(true); setIsAdding(false)}}>Ok</button>
+            </button> */}
+            <button className='usuario-cancelar-monto-bton' onClick={()=> {setAgrego(true); setIsAdding(false)}}>Listo</button>
         </div>
     </div>
   )

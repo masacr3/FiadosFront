@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect} from 'react';
 import axios from 'axios';
-import { FaEdit } from 'react-icons/fa';
-import { MdDeleteForever } from "react-icons/md";
-import { TfiMoney } from "react-icons/tfi";
-import { FaRegKeyboard } from "react-icons/fa";
 import { useParams, useNavigate } from 'react-router-dom';
 import './usuario.css';  // Importar el archivo CSS
 import Footer from './Footer';
 import AgregarMontos from './AgregarMontos';
+import Acciones from './Acciones';
+import GridCargaDatos from './GridCargaDatos';
+import Header from './Header';
+import GridHistorialDeuda from './GridHistorialDeuda';
 
 const Usuario = () => {
   const { id } = useParams();
@@ -21,9 +21,6 @@ const Usuario = () => {
   const [editMonto, setEditMonto] = useState('');
   const [editedMontos, setEditedMontos] = useState([]);
   const [agrego, setAgrego] = useState(false)
-  const addMontoRef = useRef(null);
-  const editMontoRef = useRef(null);
-  const inputRef = useRef(null);  // Nuevo ref para el input de agregar monto
 
   useEffect(() => {
     axios.get('https://masacr3bot.pythonanywhere.com/usuarios')
@@ -40,53 +37,20 @@ const Usuario = () => {
       });
   }, [id]);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (addMontoRef.current && !addMontoRef.current.contains(event.target)) {
-        setIsAdding(false);
-        setNewMonto('');
-      }
-      if (editMontoRef.current && !editMontoRef.current.contains(event.target)) {
-        setEditIndex(null);
-        setEditMonto('');
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  // useEffect(() => {
-  //   if (isAdding) {
-  //     inputRef.current.focus();
-  //   }
-  // }, [isAdding]);
-
-  if (!user) {
-    return <div className="cargando">Cargando...</div>;
-  }
-
   const totalMonto = editedMontos.reduce((total, monto) => total + monto, 0);
 
-  const handleAddMonto = (e) => {
-    e.preventDefault();
-    if (newMonto > 0) {
-      setEditedMontos([...editedMontos, parseInt(newMonto)]);
-      setNewMonto('');
-      setIsAdding(false);
-    } else {
-      alert('El monto debe ser mayor a 0');
-    }
-  };
-
   const handleEditMonto = (e, index) => {
-    e.preventDefault();
-    const updatedMontos = [...editedMontos];
-    updatedMontos[index] = parseInt(editMonto);
-    setEditedMontos(updatedMontos);
-    setEditIndex(null);
+
+    if ( e.key === 'Enter') {
+      // Previene el comportamiento por defecto del Enter (por ejemplo, si está dentro de un formulario)
+      e.preventDefault();
+
+      const updatedMontos = [...editedMontos];
+      updatedMontos[index] = parseInt(editMonto);
+      setEditedMontos(updatedMontos);
+      setEditIndex(null);
+    }
+
   };
 
   const handleDeleteMonto = (index) => {
@@ -109,7 +73,7 @@ const Usuario = () => {
     };
     console.log (updatedUser.monto)
     axios.put(`https://masacr3bot.pythonanywhere.com/montos/${user.id}/${user.nombre}`, updatedUser)
-      .then(response => {
+      .then(() => {
         setMontos([...editedMontos]);
         setIsEditing(false);
       })
@@ -121,28 +85,38 @@ const Usuario = () => {
   const handleEnviar = () => {
     const updatedUser = {
       ...user,
-      monto: newMonto
+      monto: newMonto.reverse()
     };
-    console.log (updatedUser.monto)
+    console.log("apreto enviar")
+    console.log (updatedUser)
     axios.post('https://masacr3bot.pythonanywhere.com/montos', updatedUser)
       .then(response => {
-        setMontos([...editedMontos]);
+        console.log(response.data.mensaje)
+        setMontos([...editedMontos, ...updatedUser.monto]);
+        setEditedMontos([...editedMontos, ...updatedUser.monto ])
         setIsEditing(false);
+        setNewMonto([]);
+
+        //salgo
+        setIsAdding(false);
+        setAgrego(false);
+        
       })
       .catch(error => {
         console.error('There was an error updating the montos!', error);
       });
   };
 
-
   const handleCancel = () => {
     setEditedMontos(montos);
     setIsEditing(false);
   };
 
-  const handleBack = () => {
-    navigate('/');
-  };
+  const handleCancelEnvio = () =>{
+    setIsAdding(false);
+    setAgrego(false);
+    setNewMonto([]);
+  }
 
   const handlePagar = () => {
     navigate(`/pagar/${user.id}`);
@@ -150,116 +124,26 @@ const Usuario = () => {
 
   return (
     <div className="usuario-container">
-      <h1 className={`usuario-nombre ${isEditing ? 'editar' : ''}`}>
-        {user.nombre}
-        {isEditing && <MdDeleteForever className="usuario-eliminar-icono" />}
-      </h1>
+      {user && <Header isEditing={isEditing} nombre={user.nombre}/>}
       <div className="monto-container">
         <div className='usuario-mon-btn'>
-          {!isAdding && !agrego && <ul className="usuario-montos-lista">
-            {editedMontos.map((monto, index) => (
-              <li key={index} className="usuario-monto-item">
-                {editIndex === index ? (
-                  <div ref={editMontoRef} className="usuario-monto-editar">
-                    <form onSubmit={(e) => handleEditMonto(e, index)}>
-                      <input
-                        type="number"
-                        value={editMonto}
-                        onChange={(e) => setEditMonto(e.target.value)}
-                        placeholder="Nuevo Monto"
-                        className="usuario-monto-input"
-                      />
-                    </form>
-                  </div>
-                ) : (
-                  <div className="usuario-monto-mostrar">
-                    <span className="monto-texto">{monto}</span>
-                    {isEditing && (
-                      <div className="iconos-container">
-                        <FaEdit onClick={() => { setEditIndex(index); setEditMonto(monto); }} className="usuario-monto-editar-icono" />
-                        <MdDeleteForever onClick={() => handleDeleteMonto(index)} className="usuario-monto-eliminar-icono" />
-                      </div>
-                    )}
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
+          { !isAdding && !agrego &&
+                                    <GridHistorialDeuda editedMontos={editedMontos} editIndex={editIndex} editMonto={editMonto} setEditMonto={setEditMonto} handleEditMonto={handleEditMonto} setEditIndex={setEditIndex} handleDeleteMonto={handleDeleteMonto} isEditing={isEditing} />
           }
-          {agrego && <ul className='usuario-montos-lista'>
-              {newMonto && newMonto.map((monto, index) =>(
-                <li key={index} className='usuario-monto-item'>
-                  <div className="usuario-monto-mostrar">
-                    <span className="monto-texto">{monto}</span>
-                      <div className="iconos-container">
-                        <MdDeleteForever onClick={() => handleDeleteMontoCarga(index)} className="usuario-monto-eliminar-icono" />
-                      </div>
-                  </div>
-                </li>
-              ) )}
-            </ul>}
-          <div className="usuario-acciones">
-            <FaRegKeyboard
-              className={`usuario-agregar-monto-icono ${isEditing ? 'disabled' : ''}`}
-              onClick={() => { !isEditing && setIsAdding(true); setAgrego(true)}}
-              style={{ cursor: !isEditing ? 'pointer' : 'not-allowed', color: !isEditing ? 'black' : 'white' }}
-            />
-            <TfiMoney
-              className={`usuario-pagar-icono ${isEditing ? 'disabled' : ''}`}
-              onClick={() => !isEditing && handlePagar()}
-              style={{ cursor: !isEditing ? 'pointer' : 'not-allowed', color: !isEditing ? 'black' : 'white' }}
-            />
-            <p className="usuario-total">Total: {totalMonto}</p>
-          </div>
+          { agrego ?
+                    <GridCargaDatos newMonto={newMonto} handleDeleteMontoCarga={handleDeleteMontoCarga} setIsAdding={setIsAdding}/>
+                    :
+                    <Acciones isEditing={isEditing} setIsAdding={setIsAdding} setAgrego={setAgrego} handlePagar={handlePagar} totalMonto={totalMonto}/>
+          }
         </div>
-        {isAdding && //(
-        //   <div ref={addMontoRef} className="usuario-agregar-monto">
-        //     <form onSubmit={handleAddMonto} className="usuario-agregar-monto-form">
-        //       <input
-        //         ref={inputRef}
-        //         type="number"
-        //         value={newMonto}
-        //         onChange={(e) => setNewMonto(e.target.value)}
-        //         placeholder="Nuevo Monto"
-        //         className="usuario-monto-input"
-        //       />
-        //       <button type="button" className="usuario-cancelar-monto-bton"onClick={() => { setIsAdding(false); setNewMonto(''); }}>
-        //         Cancelar
-        //       </button>
-        //     </form>
-        //   </div>
-        // )
-          <AgregarMontos newMonto={newMonto} setNewMonto={setNewMonto} setIsAdding={setIsAdding} setAgrego={setAgrego}/>
-        }
+        {isAdding 
+                && // esto seria un modal
+                  <AgregarMontos newMonto={newMonto} setNewMonto={setNewMonto} setIsAdding={setIsAdding} setAgrego={setAgrego}/>}
       </div>
-      {!isAdding && <Footer 
-                        isEditing={isEditing} 
-                        setIsEditing={setIsEditing} 
-                        handleGuardar={handleGuardar}
-                        handlerEnviar={handleEnviar} 
-                        handleCancel={handleCancel}/>
-      }
+      {!isAdding 
+                && <Footer lista={newMonto} isEnviar={agrego} isEditing={isEditing} setIsEditing={setIsEditing} handleGuardar={handleGuardar} handleEnviar={handleEnviar} handleCancel={handleCancel} handleCancelEnvio={handleCancelEnvio}/>}
     </div>
   );
 };
 
 export default Usuario;
-
-
-       
-
-
-
-
-
-
-//pagina pago
-//nombre usuario
-//total {}
-//button de aceptar
-
-
-//pagina de pago 2
-//total de pago
-//Cancelar
-
