@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import BotonFlotante from './botonFlotante/BotonFlotante';
+import Titulo from './Titulo';
 
 const Filtrador = () => {
   const [users, setUsers] = useState([]);
@@ -8,19 +10,15 @@ const Filtrador = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchUsers();
-    console.log("a ver si me salvo")
-  }, []);
-
-  const fetchUsers = () => {
     axios.get('https://masacr3bot.pythonanywhere.com/usuarios')
-      .then(response => {
-        setUsers(response.data.usuarios);
-      })
-      .catch(error => {
-        console.error('Hubo un error al obtener los usuarios!', error);
-      });
-  };
+    .then(response => {
+      setUsers(response.data.usuarios);
+      console.log("cargando usuarios de la base de datos")
+    })
+    .catch(error => {
+      console.error('Hubo un error al obtener los usuarios!', error);
+    });
+  }, []);
 
   const handleUserClick = (user) => {
     navigate(`/usuario/${user.id}`);
@@ -57,29 +55,19 @@ const Filtrador = () => {
 
   return (
     <div className="card">
-      <div className="header">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          placeholder="Buscar usuario"
-          className="filtrador-input"
-        />
-        {filteredUsers.length === 0 && (
-          <button onClick={handleCrearUsuario} className="filtrador-btn-crear">
-            Crear Usuario
-          </button>
-        )}
-      </div>
-
-      <h3>Lista de Usuarios</h3>
-      <ul>
-        {filteredUsers.map(user => (
-          <li key={user.id} onClick={() => handleUserClick(user)} className='flex-center'>
-            <div>{user.nombre}</div>
-          </li>
-        ))}
-      </ul>
+      <Titulo />
+      <BotonFlotante nombre={"Filtrar"} searchTerm={searchTerm} setSearchTerm={setSearchTerm} filteredUsers={filteredUsers} handleCrearUsuario={handleCrearUsuario}/>
+      {filteredUsers.length !==0 && <div className='pr'>
+                        <label className='title-s'>Lista de deudores</label>
+                        <ul>
+                          {filteredUsers.map(user => (
+                            <li key={user.id} onClick={() => handleUserClick(user)} className='flex-center'>
+                              <div>{user.nombre}</div>
+                            </li>
+                          ))}
+                        </ul>
+                        </div>
+      }
     </div>
   );
 };
