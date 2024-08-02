@@ -6,7 +6,9 @@ import { MdDeleteForever } from "react-icons/md";
 // eslint-disable-next-line react/prop-types
 function GridHistorialDeuda({editedMontos, editIndex, editMonto, setEditMonto, handleEditMonto, setEditIndex, handleDeleteMonto, isEditing}) {
   return (
-    <ul className="usuario-montos-lista">
+    <>
+      <label className='title-s'>Historial de deudas</label>
+        <ul>
             {[].map.call(editedMontos, x => x).reverse().map((monto, index) => (
               <li key={index} className="usuario-monto-item">
                 {editIndex === index ? (
@@ -34,6 +36,7 @@ function GridHistorialDeuda({editedMontos, editIndex, editMonto, setEditMonto, h
               </li>
             ))}
           </ul>
+        </>
   )
 }
 

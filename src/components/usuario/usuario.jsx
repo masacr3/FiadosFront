@@ -39,6 +39,18 @@ const Usuario = () => {
 
   const totalMonto = editedMontos.reduce((total, monto) => total + monto, 0);
 
+  const handleEliminarUsuario = () =>{
+    axios.delete(`https://masacr3bot.pythonanywhere.com/usuarios/${id}`)
+      .then(response => {
+        console.log(response.data.mensaje)
+        navigate("/");
+      })
+      .catch(error => {
+        console.error('Hubo un error al eliminar el usuario!', error);
+      });
+  }
+
+
   const handleEditMonto = (e, index) => {
 
     if ( e.key === 'Enter') {
@@ -123,8 +135,8 @@ const Usuario = () => {
   };
 
   return (
-    <div className="usuario-container">
-      {user && <Header isEditing={isEditing} nombre={user.nombre}/>}
+    <div className="card">
+      {user && <Header isEditing={isEditing} nombre={user.nombre} eliminar={handleEliminarUsuario}/>}
       <div className="monto-container">
         <div className='usuario-mon-btn'>
           { !isAdding && !agrego &&
@@ -133,7 +145,7 @@ const Usuario = () => {
           { agrego ?
                     <GridCargaDatos newMonto={newMonto} handleDeleteMontoCarga={handleDeleteMontoCarga} setIsAdding={setIsAdding}/>
                     :
-                    <Acciones isEditing={isEditing} setIsAdding={setIsAdding} setAgrego={setAgrego} handlePagar={handlePagar} totalMonto={totalMonto}/>
+                    ( !isEditing  && <Acciones isEditing={isEditing} setIsAdding={setIsAdding} setAgrego={setAgrego} handlePagar={handlePagar} totalMonto={totalMonto}/> )
           }
         </div>
         {isAdding 

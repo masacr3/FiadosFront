@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 import { MdDeleteForever } from "react-icons/md";
 
-function Header({isEditing, nombre}) {
+function Header({isEditing, nombre, eliminar}) {
   return (
-    <h1 className={`usuario-nombre ${isEditing ? 'editar' : ''}`}>
-        {nombre}
-        {isEditing && <MdDeleteForever className="usuario-eliminar-icono" />}
-    </h1>
+    <div className={`titulo flex-row-jc-e ${isEditing ? 'editar' : 'no-editar'}`}>
+        <span>{nombre}</span>
+        {isEditing && <MdDeleteForever className="icono-eliminar" onClick={eliminar} />}
+    </div>
   )
 }
 

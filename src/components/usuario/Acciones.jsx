@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { FaRegKeyboard } from "react-icons/fa";
 import { TfiMoney } from "react-icons/tfi";
 

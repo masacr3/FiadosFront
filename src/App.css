@@ -116,6 +116,24 @@
   color: var(--md-sys-color-on-surface);
 }
 
+.card ul li{
+  box-sizing: border-box;
+  border: 1px solid var(--md-sys-color-surface-variant);
+  border-bottom: none;
+  width: 65vw;
+  padding: 10px;
+  height: 56px;
+  font-size: var(--md-sys-font-t-m-20);
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+}
+
+.card ul li.usuario-monto-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
 .card ul li:first-child{
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
@@ -143,9 +161,11 @@
 }
 
 .titulo{
+  width: 100%;
   font-size: var(--md-sys-font-d-s-36);
-  margin-top: 20px;
-  margin-bottom: 30px;
+  padding-top: 20px;
+  padding-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 
@@ -226,4 +246,25 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
+}
+
+.flex-row-jc-e{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.editar{
+  background-color: var(--md-sys-color-tertiary-container);
+  color: var(--md-sys-color-on-tertiary-container);
+}
+
+.icono-eliminar{
+  color: var(--md-sys-color-tertiary-fixed);
+}
+
+.no-editar{
+  background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
 }
