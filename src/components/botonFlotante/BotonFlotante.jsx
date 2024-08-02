@@ -3,11 +3,17 @@ import { useState } from "react";
 
 function BotonFlotante({nombre, searchTerm, setSearchTerm, filteredUsers, handleCrearUsuario}) {
   const [expanded, setExpanded] = useState(false);
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
     if (expanded){
       setSearchTerm('');
+    }
+    else{
+        scrollToTop();
     }
   };
   return (
@@ -24,7 +30,7 @@ function BotonFlotante({nombre, searchTerm, setSearchTerm, filteredUsers, handle
               <span className='bar'></span>
               <label>Filtrar usuarios</label>
               <div className="flex-row">
-                {filteredUsers.length === 0 ? <button className="crear-usuario" onClick={handleCrearUsuario}>Crear Usuario</button> : <button className="crear-usuario" onClick={() =>setExpanded(!expanded)}>Ok</button>}
+                {filteredUsers.length === 0 && <button className="crear-usuario" onClick={handleCrearUsuario}>Crear Usuario</button>}
                 <button className={"cancel-button"} onClick={handleExpandClick}>cancel</button>
               </div>
             </div>
