@@ -6,11 +6,11 @@ import { TfiMoney } from "react-icons/tfi";
 function Acciones({isEditing, setIsAdding, setAgrego, handlePagar, totalMonto}) {
   return (
     <div className="usuario-acciones">
-            <FaRegKeyboard
+            {/* <FaRegKeyboard
               className={`usuario-agregar-monto-icono ${isEditing ? 'disabled' : ''}`}
               onClick={() => { !isEditing && setIsAdding(true); setAgrego(true)}}
               style={{ cursor: !isEditing ? 'pointer' : 'not-allowed', color: !isEditing ? 'black' : 'white' }}
-            />
+            /> */}
             <TfiMoney
               className={`usuario-pagar-icono ${isEditing ? 'disabled' : ''}`}
               onClick={() => !isEditing && handlePagar()}

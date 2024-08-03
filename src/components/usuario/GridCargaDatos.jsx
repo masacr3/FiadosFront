@@ -18,7 +18,7 @@ function GridCargaDatos({newMonto, handleDeleteMontoCarga, setIsAdding}) {
                     </li>
                 ) )}
         </ul>
-        <button className="usuario-button" onClick={()=> setIsAdding(true)}>Seguir Cargando..</button>
+        {/* <button className="usuario-button" onClick={()=> setIsAdding(true)}>Seguir Cargando..</button> */}
     </div>
   )
 }

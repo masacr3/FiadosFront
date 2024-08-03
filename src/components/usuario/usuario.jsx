@@ -8,6 +8,7 @@ import Acciones from './Acciones';
 import GridCargaDatos from './GridCargaDatos';
 import Header from './Header';
 import GridHistorialDeuda from './GridHistorialDeuda';
+import IngresoMonto from '../botonFlotante/IngresoMonto';
 
 const Usuario = () => {
   const { id } = useParams();
@@ -66,7 +67,8 @@ const Usuario = () => {
   };
 
   const handleDeleteMonto = (index) => {
-    const updatedMontos = editedMontos.filter((_, i) => i !== index);
+    let transformadaPosicionInversa = editedMontos.length - 1 - index;
+    const updatedMontos = editedMontos.filter((_, i) => i !== transformadaPosicionInversa);
     setEditedMontos(updatedMontos);
   };
 
@@ -152,6 +154,7 @@ const Usuario = () => {
                 && // esto seria un modal
                   <AgregarMontos newMonto={newMonto} setNewMonto={setNewMonto} setIsAdding={setIsAdding} setAgrego={setAgrego}/>}
       </div>
+      <IngresoMonto newMonto={newMonto} setNewMonto={setNewMonto} agrego={agrego} setAgrego={setAgrego}/>
       {!isAdding 
                 && <Footer lista={newMonto} isEnviar={agrego} isEditing={isEditing} setIsEditing={setIsEditing} handleGuardar={handleGuardar} handleEnviar={handleEnviar} handleCancel={handleCancel} handleCancelEnvio={handleCancelEnvio}/>}
     </div>
