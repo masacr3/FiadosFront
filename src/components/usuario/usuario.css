@@ -231,6 +231,11 @@
   justify-content: space-around;
 }
 
+.usuario-mon-btn.start-index{
+  justify-content: flex-start;
+  margin-left: 12px;
+}
+
 .disabled {
   pointer-events: none;
   background-color: gray;

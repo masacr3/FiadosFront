@@ -146,7 +146,7 @@ const Usuario = () => {
     <div className="card">
       {user && <Header isEditing={isEditing} nombre={user.nombre} eliminar={handleEliminarUsuario} editar={setIsEditing}/>}
       <div className="monto-container">
-        <div className='usuario-mon-btn'>
+        <div className={`usuario-mon-btn ${isEditing ? 'start-index' : ''}`}>
           { !isAdding && !agrego &&
                                     <GridHistorialDeuda editedMontos={editedMontos} editIndex={editIndex} editMonto={editMonto} setEditMonto={setEditMonto} handleEditMonto={handleEditMonto} setEditIndex={setEditIndex} handleDeleteMonto={handleDeleteMonto} isEditing={isEditing} />
           }
