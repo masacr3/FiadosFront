@@ -1,8 +1,16 @@
-import React, { useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 
-function IngresoMonto({newMonto, setNewMonto, agrego, setAgrego}) {
+function IngresoMonto({newMonto, setNewMonto, agrego, setAgrego, setInputFocus}) {
     const [expanded, setExpanded] = useState(false);
     const [inputValue, setInputValue] = useState('');
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+      if (expanded && inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, [expanded]);
+
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
@@ -24,13 +32,15 @@ function IngresoMonto({newMonto, setNewMonto, agrego, setAgrego}) {
       };
 
     const handleExpandClick = () => {
+
+
         setExpanded(!expanded);
         if (expanded){
           console.log("nada");
         }
         else{
             scrollToTop();
-            setAgrego(true)
+            setAgrego(true);
         }
       };
   return (
@@ -40,13 +50,16 @@ function IngresoMonto({newMonto, setNewMonto, agrego, setAgrego}) {
         <>
             <input
                 type="number"
+                ref={inputRef}
+                onBlur={() => {setExpanded(false); setInputFocus(false);}}
+                onFocus={()=> setInputFocus(true)}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Nuevo Monto"
                 className="usuario-monto-input"
               />
-              <button className='cancel-button' onClick={handleExpandClick}>Listo</button>
+              {/* <button className='cancel-button' onClick={handleExpandClick}>Listo</button> */}
               </>
               }
     </div>

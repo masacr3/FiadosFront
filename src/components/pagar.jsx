@@ -1,19 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import './pagar.css';
+import './pagar.css'; 
+import BotonAnterior from './botonFlotante/BotonAnterior';
 
 const Pagar = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [montos, setMontos] = useState([]);
-  const [isAdding, setIsAdding] = useState(false);
   const [newMonto, setNewMonto] = useState('');
+  const inputRef = useRef(null);
+  const [vuelto, setVuelto] = useState(0)
+
+  const[tramite , setTramite] = useState(false);
+  const[calculoVuelto, setCalculoVuelto] = useState(false);
 
   useEffect(() => {
     fetchUser();
-  }, [id]);
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   const fetchUser = () => {
     axios.get('https://masacr3bot.pythonanywhere.com/usuarios')
@@ -32,7 +40,6 @@ const Pagar = () => {
   const totalMonto = parseInt(montos.reduce((total, monto) => total + monto, 0));
 
   const handlePagar = () => {
-    if (isAdding) {
       const fecha = new Date().toISOString();
       const pagoDelUsuario = parseInt(newMonto);
       const jsonData = {
@@ -40,50 +47,79 @@ const Pagar = () => {
         nombre: user.nombre,
         deuda_total: totalMonto,
         pago_del_usuario: pagoDelUsuario,
+        monto : user.monto,
         fecha: fecha
-      };
+      }
       
       axios.post('https://masacr3bot.pythonanywhere.com/pagar', jsonData)
         .then(response => {
-          //fetchUser(); // Refresh the user data after payment
-          setIsAdding(false);
-          navigate(`/usuario/${user.id}`);
+           navigate(`/usuario/${user.id}`);
         })
         .catch(error => {
           console.error('Hubo un error al realizar el pago!', error);
         });
-    } else {
-      setIsAdding(true);
-    }
+    
   };
 
   if (!user) return <div>Cargando...</div>;
 
-  return (
-    <div className="pagar-container">
-      <h1 className="pagar-monto">{user.nombre}</h1>
-      <div className="pagar-acciones">
-        <p className="pagar-total">Total: {totalMonto}</p>
-        {isAdding && (
-          <div className="pagar-agregar-monto">
-            <input 
-              type="number" 
-              value={newMonto} 
-              onChange={(e) => setNewMonto(e.target.value)} 
-              placeholder="Cuanto pago" 
-              className="pagar-monto-input"
-            />
-          </div>
-        )}
-        
-      </div>
-      <div className="btn-pagar-flotantes-conteiner">
+  const apretoEnter = (e) => {
+    if ( e.key === 'Enter') {
+      // Previene el comportamiento por defecto del Enter (por ejemplo, si está dentro de un formulario)
+      e.preventDefault();
+      // Quita el foco del input
+      inputRef.current.blur();
 
-          <button className="pagar-button" onClick={() => navigate(-1)}>Cancelar</button>
-          <button className="pagar-button" onClick={handlePagar}>
-            {isAdding ? 'Enviar Pago' : 'Pagar'}
-          </button>
-        </div>
+      if (!isNaN(parseInt(newMonto))){
+        // Agrega el valor del input a la lista
+        let monto = parseInt(newMonto);
+
+        setVuelto(monto - totalMonto);
+
+        setCalculoVuelto(true)
+        
+      }
+      else{
+        console.log("el valor no es numerico")
+      }
+    }
+  };
+
+  return (
+    <div className='fullbg'>
+      <BotonAnterior user={user}/>
+      <div className='flex montserrat-f-100 fs-70 pagar'>Pagar</div>
+      <div className='flex-col-center'>
+        <div className='text-monto-70 fs-70 flex-center'><p>{totalMonto}</p></div>
+        {!tramite && <button onClick={()=>setTramite(true)} className="tramite">Pagar!!</button>}
+        {
+          tramite && !calculoVuelto  && <input 
+                            type="number" 
+                            ref={inputRef}
+                            value={newMonto}
+                            onChange={(e) => setNewMonto(e.target.value)}
+                            onKeyDown={apretoEnter}
+                            placeholder="Con cuanto pago..."
+                            className="pagar-input"
+                      />
+        }
+        {
+          calculoVuelto && <h2>pago con ${newMonto}</h2>
+        }
+        {
+          calculoVuelto && ( vuelto >= 0 ? <h2 className='text-center'>El vuelto es {vuelto}, el usuario queda sin deuda</h2>
+            :
+            <h2 className='text-center'>El usuario queda con una deuda de {vuelto * (-1)}</h2>
+          )
+        }
+        {
+          calculoVuelto && <div className='flex-row'>
+            <button className='tramite small' onClick={handlePagar}>Saldar cuenta!!</button>
+            {/* <button className='tramite small' onClick={()=> navigate(-1)}>Cancelar</button> */}
+          </div>
+        }
+      </div>
+    
     </div>
   );
 };

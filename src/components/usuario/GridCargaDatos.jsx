@@ -6,7 +6,7 @@ function GridCargaDatos({newMonto, handleDeleteMontoCarga, setIsAdding}) {
   return (
     <div className='flex-col'>
         <h3>Carga datos</h3>
-        <ul className='usuario-montos-lista'>
+        <ul>
                 {newMonto && newMonto.map((monto, index) =>(
                     <li key={index} className='usuario-monto-item'>
                     <div className="usuario-monto-mostrar">

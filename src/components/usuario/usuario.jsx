@@ -9,6 +9,10 @@ import GridCargaDatos from './GridCargaDatos';
 import Header from './Header';
 import GridHistorialDeuda from './GridHistorialDeuda';
 import IngresoMonto from '../botonFlotante/IngresoMonto';
+import BotonEnviar from '../botonFlotante/BotonEnviar';
+import BotonCancelar from '../botonFlotante/BotonCancelar';
+import BotonGuardar from '../botonFlotante/BotonGuardar';
+import BotonVolver from '../botonFlotante/BotonVolver';
 
 const Usuario = () => {
   const { id } = useParams();
@@ -22,6 +26,7 @@ const Usuario = () => {
   const [editMonto, setEditMonto] = useState('');
   const [editedMontos, setEditedMontos] = useState([]);
   const [agrego, setAgrego] = useState(false)
+  const [inputFocus, setInputFocus] = useState(false)
 
   useEffect(() => {
     axios.get('https://masacr3bot.pythonanywhere.com/usuarios')
@@ -59,7 +64,8 @@ const Usuario = () => {
       e.preventDefault();
 
       const updatedMontos = [...editedMontos];
-      updatedMontos[index] = parseInt(editMonto);
+      let posInversa = editedMontos.length - 1 - index;
+      updatedMontos[posInversa] = parseInt(editMonto);
       setEditedMontos(updatedMontos);
       setEditIndex(null);
     }
@@ -138,7 +144,7 @@ const Usuario = () => {
 
   return (
     <div className="card">
-      {user && <Header isEditing={isEditing} nombre={user.nombre} eliminar={handleEliminarUsuario}/>}
+      {user && <Header isEditing={isEditing} nombre={user.nombre} eliminar={handleEliminarUsuario} editar={setIsEditing}/>}
       <div className="monto-container">
         <div className='usuario-mon-btn'>
           { !isAdding && !agrego &&
@@ -154,9 +160,21 @@ const Usuario = () => {
                 && // esto seria un modal
                   <AgregarMontos newMonto={newMonto} setNewMonto={setNewMonto} setIsAdding={setIsAdding} setAgrego={setAgrego}/>}
       </div>
-      <IngresoMonto newMonto={newMonto} setNewMonto={setNewMonto} agrego={agrego} setAgrego={setAgrego}/>
-      {!isAdding 
-                && <Footer lista={newMonto} isEnviar={agrego} isEditing={isEditing} setIsEditing={setIsEditing} handleGuardar={handleGuardar} handleEnviar={handleEnviar} handleCancel={handleCancel} handleCancelEnvio={handleCancelEnvio}/>}
+      {!isEditing && 
+                      <IngresoMonto newMonto={newMonto} setNewMonto={setNewMonto} agrego={agrego} setAgrego={setAgrego} setInputFocus={setInputFocus}/>
+      }
+      {!isEditing && !agrego && newMonto.length === 0 && <BotonVolver />}
+      {!isEditing && agrego && newMonto.length !== 0 && !inputFocus && <BotonEnviar handleEnviar={handleEnviar}/>}
+      {!isEditing && agrego && !inputFocus && <BotonCancelar handleCancelEnvio={handleCancelEnvio}/>}
+      {/* {!isAdding 
+                && <Footer lista={newMonto} isEnviar={agrego} isEditing={isEditing} setIsEditing={setIsEditing} handleGuardar={handleGuardar} handleEnviar={handleEnviar} handleCancel={handleCancel} handleCancelEnvio={handleCancelEnvio}/>} */}
+      {
+        !isAdding && !agrego && isEditing &&
+        <>
+          <BotonGuardar guardar={handleGuardar} />
+          <BotonCancelar handleCancelEnvio={handleCancel} />
+        </>
+      }          
     </div>
   );
 };
