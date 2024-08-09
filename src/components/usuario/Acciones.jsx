@@ -16,7 +16,7 @@ function Acciones({isEditing, setIsAdding, setAgrego, handlePagar, totalMonto}) 
               onClick={() => !isEditing && handlePagar()}
               style={{ cursor: !isEditing ? 'pointer' : 'not-allowed', color: !isEditing ? 'black' : 'white' }}
             />
-            <p className="usuario-total">Total: {totalMonto}</p>
+            {/* <p className="usuario-total">Total: {totalMonto}</p> */}
     </div>
   )
 }

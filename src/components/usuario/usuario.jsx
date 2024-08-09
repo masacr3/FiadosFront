@@ -144,21 +144,22 @@ const Usuario = () => {
 
   return (
     <div className="card">
-      {user && <Header isEditing={isEditing} nombre={user.nombre} eliminar={handleEliminarUsuario} editar={setIsEditing}/>}
+      {user && <Header isEditing={isEditing} nombre={user.nombre} eliminar={handleEliminarUsuario} editar={setIsEditing} total={totalMonto}/>}
       <div className="monto-container">
-        <div className={`usuario-mon-btn ${isEditing ? 'start-index' : ''}`}>
+        {/* <div className={`usuario-mon-btn ${isEditing ? 'start-index' : ''}`}> */}
+        <div className={`usuario-mon-btn ${!inputFocus ? 'start-index' : ''}`}>
           { !isAdding && !agrego &&
                                     <GridHistorialDeuda editedMontos={editedMontos} editIndex={editIndex} editMonto={editMonto} setEditMonto={setEditMonto} handleEditMonto={handleEditMonto} setEditIndex={setEditIndex} handleDeleteMonto={handleDeleteMonto} isEditing={isEditing} />
           }
-          { agrego ?
+          { agrego &&
                     <GridCargaDatos newMonto={newMonto} handleDeleteMontoCarga={handleDeleteMontoCarga} setIsAdding={setIsAdding}/>
-                    :
-                    ( !isEditing  && <Acciones isEditing={isEditing} setIsAdding={setIsAdding} setAgrego={setAgrego} handlePagar={handlePagar} totalMonto={totalMonto}/> )
+                    // :
+                    // ( !isEditing  && <Acciones isEditing={isEditing} setIsAdding={setIsAdding} setAgrego={setAgrego} handlePagar={handlePagar} totalMonto={totalMonto}/> )
           }
         </div>
-        {isAdding 
+        {/* {isAdding 
                 && // esto seria un modal
-                  <AgregarMontos newMonto={newMonto} setNewMonto={setNewMonto} setIsAdding={setIsAdding} setAgrego={setAgrego}/>}
+                  <AgregarMontos newMonto={newMonto} setNewMonto={setNewMonto} setIsAdding={setIsAdding} setAgrego={setAgrego}/>} */}
       </div>
       {!isEditing && 
                       <IngresoMonto newMonto={newMonto} setNewMonto={setNewMonto} agrego={agrego} setAgrego={setAgrego} setInputFocus={setInputFocus}/>

@@ -1,8 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // eslint-disable-next-line react/prop-types
 function AgregarMontos({newMonto, setNewMonto, setIsAdding, setAgrego}) {
     const [inputValue, setInputValue] = useState('')
+    const [onIos, setOnIos] = useState(false)
+    useEffect( () =>{
+      const isIOS = () => {
+        return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      };     
+      // esto verifica si estoy en IOS
+      setOnIos(isIOS)
+      
+    }, [])
+
     const handleKeyDown = (e) => {
         if ( e.key === 'Enter') {
           // Previene el comportamiento por defecto del Enter (por ejemplo, si está dentro de un formulario)
@@ -23,7 +33,7 @@ function AgregarMontos({newMonto, setNewMonto, setIsAdding, setAgrego}) {
     <div className="usuario-agregar-monto-p">
         <div className="usuario-agregar-monto-form">
             <input
-                type="number"
+                type={onIos ? "tel" : "number"}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}

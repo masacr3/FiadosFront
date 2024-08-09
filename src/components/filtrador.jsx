@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import BotonFlotante from './botonFlotante/BotonFlotante';
 import Titulo from './Titulo';
+import Tamanioviewport from './tools/Tamanioviewport';
 
 const Filtrador = () => {
   const [users, setUsers] = useState([]);
@@ -55,6 +56,7 @@ const Filtrador = () => {
 
   return (
     <div className="card">
+      <Tamanioviewport />
       <Titulo />
       <BotonFlotante nombre={"Filtrar"} searchTerm={searchTerm} setSearchTerm={setSearchTerm} filteredUsers={filteredUsers} handleCrearUsuario={handleCrearUsuario}/>
       {filteredUsers.length !==0 && <div className='pr'>

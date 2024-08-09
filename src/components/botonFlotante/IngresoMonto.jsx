@@ -1,4 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
+import InputIphone from '../InputIphone';
+import TecladoNumerico from '../TecladoNumerico';
 
 function IngresoMonto({newMonto, setNewMonto, agrego, setAgrego, setInputFocus}) {
     const [expanded, setExpanded] = useState(false);
@@ -14,22 +16,29 @@ function IngresoMonto({newMonto, setNewMonto, agrego, setAgrego, setInputFocus})
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
-    const handleKeyDown = (e) => {
-        if ( e.key === 'Enter') {
-          // Previene el comportamiento por defecto del Enter (por ejemplo, si está dentro de un formulario)
-          e.preventDefault();
+    // const handleKeyDown = (e) => {
+    //     if ( e.key === 'Enter') {
+    //       // Previene el comportamiento por defecto del Enter (por ejemplo, si está dentro de un formulario)
+    //       e.preventDefault();
 
-          if (!isNaN(parseInt(inputValue))){
-            // Agrega el valor del input a la lista
-            setNewMonto([parseInt(inputValue), ...newMonto]);
-            // Limpia el input
-            setInputValue('');
-          }
-          else{
-            console.log("el valor no es numerico")
-          }
-        }
-      };
+    //       if (!isNaN(parseInt(inputValue))){
+    //         // Agrega el valor del input a la lista
+    //         setNewMonto([parseInt(inputValue), ...newMonto]);
+    //         // Limpia el input
+    //         setInputValue('');
+    //       }
+    //       else{
+    //         console.log("el valor no es numerico")
+    //       }
+    //     }
+    //   };
+
+    const handleKeyDown = (value) =>{
+      if (value.length > 0 ){
+        let numero = parseInt(value.join(''))
+        setNewMonto([numero, ...newMonto]);
+      }
+    }
 
     const handleExpandClick = () => {
 
@@ -44,11 +53,13 @@ function IngresoMonto({newMonto, setNewMonto, agrego, setAgrego, setInputFocus})
         }
       };
   return (
-    <div className={`bton-flotante ${expanded ? 'expanded fixedfulltop' : ''}`}>
+    // <div className={`bton-flotante ${expanded ? 'expanded fixedfulltop' : ''}`}>
+    <div className="bton-flotante">
         {!expanded && <button className="monto" onClick={handleExpandClick}>{agrego ? "Seguir Ingresando" : "ingresar"}</button>}
         {expanded && 
         <>
-            <input
+          <TecladoNumerico keyDownEnter={handleKeyDown} focus={setInputFocus} setExpanded={setExpanded}/>
+            {/* <input
                 type="number"
                 ref={inputRef}
                 onBlur={() => {setExpanded(false); setInputFocus(false);}}
@@ -58,7 +69,7 @@ function IngresoMonto({newMonto, setNewMonto, agrego, setAgrego, setInputFocus})
                 onKeyDown={handleKeyDown}
                 placeholder="Nuevo Monto"
                 className="usuario-monto-input"
-              />
+              /> */}
               {/* <button className='cancel-button' onClick={handleExpandClick}>Listo</button> */}
               </>
               }
