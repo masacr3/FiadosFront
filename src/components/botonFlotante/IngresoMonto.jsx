@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from 'react'
-import InputIphone from '../InputIphone';
 import TecladoNumerico from '../TecladoNumerico';
 
 function IngresoMonto({newMonto, setNewMonto, agrego, setAgrego, setInputFocus}) {

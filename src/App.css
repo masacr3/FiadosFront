@@ -27,7 +27,7 @@
 
 .card .header{
   position: relative;
-  width: 390px;
+  width: 300px;
   margin-top: 20px;
   display: flex;
   flex-direction: column;
@@ -39,11 +39,11 @@
 .header input {
   box-sizing: border-box;
     background: none;
-    color: #c6c6c6;
+    color: #2196F3;
     font-size: 18px;
     padding: 10px 10px 10px 5px;
     display: block;
-    width: 320px;
+    width: 300px;
     border: none;
     border-radius: 0;
     border-bottom: 1px solid #c6c6c6;
@@ -60,13 +60,13 @@
 }
 
 .header input:focus ~ .bar:before{
-  width: 320px;
+  width: 300px;
 }
 
 .bar {
   position: relative;
   display: block;
-  width: 320px;
+  width: 300px;
 }
 
 .bar:before {
@@ -86,7 +86,7 @@
   font-weight: normal;
   position: absolute;
   pointer-events: none;
-  right: 60px;
+  right: 0px;
   top: 10px;
   transition: 300ms ease all;
   text-align-last: end;

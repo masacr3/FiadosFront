@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import BotonFlotante from './botonFlotante/BotonFlotante';
@@ -8,7 +8,16 @@ import Tamanioviewport from './tools/Tamanioviewport';
 const Filtrador = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activateSearch, setActivateSearch] = useState(false)
   const navigate = useNavigate();
+
+  const inputRef = useRef(null);
+
+    useEffect(() => {
+      if (activateSearch && inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, [activateSearch]);
 
   useEffect(() => {
     axios.get('https://masacr3bot.pythonanywhere.com/usuarios')
@@ -58,7 +67,21 @@ const Filtrador = () => {
     <div className="card">
       <Tamanioviewport />
       <Titulo />
-      <BotonFlotante nombre={"Filtrar"} searchTerm={searchTerm} setSearchTerm={setSearchTerm} filteredUsers={filteredUsers} handleCrearUsuario={handleCrearUsuario}/>
+      <BotonFlotante nombre={"Filtrar"} setActivateSearch={setActivateSearch} activateSearch={activateSearch}/>
+      {activateSearch && 
+                          <div className="header">
+                            <input
+                              type="text"
+                              ref={inputRef}
+                              value={searchTerm}
+                              onChange={e => setSearchTerm(e.target.value)}
+                              onBlur={()=>setActivateSearch(false)}
+                              className="filtrador-input"
+                            />
+                            <span className='bar'></span>
+                            <label>Filtrar usuarios</label>
+                          </div>
+      }
       {filteredUsers.length !==0 && <div className='pr'>
                         <label className='title-s'>Lista de deudores</label>
                         <ul>
@@ -69,6 +92,9 @@ const Filtrador = () => {
                           ))}
                         </ul>
                         </div>
+      }
+      {
+        searchTerm.length > 0 && filteredUsers.length === 0 && <button >Crear el usuario {searchTerm}</button>
       }
     </div>
   );
