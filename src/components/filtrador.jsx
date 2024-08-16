@@ -4,11 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import BotonFlotante from './botonFlotante/BotonFlotante';
 import Titulo from './Titulo';
 import Tamanioviewport from './tools/Tamanioviewport';
+import MensajeFiltroUsuario from './Mensajes/MensajeFiltroUsuario';
 
 const Filtrador = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [activateSearch, setActivateSearch] = useState(false)
+  const [seConectoAlServidor, setSeConectoAlServidor] = useState(false)
   const navigate = useNavigate();
 
   const inputRef = useRef(null);
@@ -24,9 +26,11 @@ const Filtrador = () => {
     .then(response => {
       setUsers(response.data.usuarios);
       console.log("cargando usuarios de la base de datos")
+      setSeConectoAlServidor(true)
     })
     .catch(error => {
       console.error('Hubo un error al obtener los usuarios!', error);
+      setSeConectoAlServidor(false)
     });
   }, []);
 
@@ -59,6 +63,15 @@ const Filtrador = () => {
       });
   };
 
+  const condicionesDeCreacionDeNombreDeUsuario = (nombre) =>{
+    console.log("el caracter es ",nombre[0])
+    if (nombre[0] === ' '  || !isNaN(parseInt(nombre[0])) ) return false;
+
+    if (nombre[nombre.length -1] === " ") return false 
+
+    return true;
+  }
+
   const filteredUsers = users.filter(user =>
     user.nombre && user.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -67,6 +80,7 @@ const Filtrador = () => {
     <div className="card">
       <Tamanioviewport />
       <Titulo />
+      { searchTerm.length > 0 && filteredUsers.length === 0 &&  !condicionesDeCreacionDeNombreDeUsuario (searchTerm) && <MensajeFiltroUsuario />}
       <BotonFlotante nombre={"Filtrar"} setActivateSearch={setActivateSearch} activateSearch={activateSearch}/>
       {activateSearch && 
                           <div className="header">
@@ -94,7 +108,8 @@ const Filtrador = () => {
                         </div>
       }
       {
-        searchTerm.length > 0 && filteredUsers.length === 0 && <button >Crear el usuario {searchTerm}</button>
+       seConectoAlServidor && searchTerm.length > 0 && filteredUsers.length === 0 && condicionesDeCreacionDeNombreDeUsuario(searchTerm ) && 
+                  <button >Crear el usuario {searchTerm}</button> 
       }
     </div>
   );

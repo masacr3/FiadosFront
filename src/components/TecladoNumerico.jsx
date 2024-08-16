@@ -52,10 +52,7 @@ function TecladoNumerico({keyDownEnter, focus, setExpanded}) {
         <div className='flex-col-center'>
             {entrada.length > 0 ? <h1 className='input-text-teclado'>${ponerPunto(entrada)}</h1> : <h1/>}
             <div className='teclado'>
-                {numeros.map((item,index)=>(
-                    retornaBton(item, index)
-                    // <div key={index} className='bton-input-teclado' onClick={() => pushTecla(item)}> <span>{item}</span></div> 
-                ))}
+                { numeros.map((item,index)=> retornaBton(item, index) ) }
             </div>
             <div className='listo-btn-teclado' onClick={()=>{focus(false); setExpanded(false)}}>Ocultar teclado</div>
         </div>

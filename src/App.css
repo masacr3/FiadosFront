@@ -23,6 +23,7 @@
   width: 100%;
   border-radius: 16px;
   margin-bottom: 90px;
+  position: relative;
 }
 
 .card .header{
@@ -197,7 +198,7 @@
 
 .bton-flotante{
   position: fixed;
-  right: 16px;
+  right: 8px;
   bottom: 200px;
   z-index: 10000;
 }
@@ -428,4 +429,16 @@
 
 .texto-discreto{
   font-size: 30px;
+}
+
+.mensaje-warning{
+  position: relative;
+  box-sizing: border-box;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-radius: 16px;
+  background-color: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-on-error-container);
+  margin-left: 12px;
+  margin-right: 12px;
 }
